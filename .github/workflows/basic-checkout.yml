@@ -14,7 +14,7 @@ jobs:
     env:
       CUSTOM_MESSAGE: "Hello from GitHub Actions!"
 
-    steps: 
+    steps:
       # Step 1: Checkout the repo
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -48,7 +48,9 @@ jobs:
 
       # Step 6: Display custom environment variable
       - name: Custom environment
-        run: echo "Note: ${{ env.CUSTOM_MESSAGE }}"
+        env:
+          CUSTOM_MESSAGE: "Hello from GitHub Actions!"
+        run: echo $CUSTOM_MESSAGE
 
       # Step 7: Conditional execution (only runs on push event)
       - name: Conditional step
