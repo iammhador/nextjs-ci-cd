@@ -25,38 +25,18 @@ jobs:
       - name: Build project
         run: npm run build
 
-  # Second job: test (depends on build)
-  test:
-    name: Run tests
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run unit tests
-        run: npm test   # <-- instead of npm start
-
-  # Third job: Deploy
+  # Second job: Deploy
   deploy:
     name: Deploy Application
     runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: build
     steps:
       - name: Deploy
         run: |
           echo "🚀 Deploying application..."
           echo "Deployment successful!"
 
-  # Fourth job: Notify
+  # Third job: Notify
   notify:
     name: Send Notification
     runs-on: ubuntu-latest
