@@ -1,0 +1,58 @@
+name: Basic Checkout
+
+# Trigger workflow on push to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  basic-checkout:
+    runs-on: ubuntu-latest
+
+    # Define custom environment variables for the whole job
+    env:
+      CUSTOM_MESSAGE: "Hello from GitHub Actions!"
+
+    steps:
+      # Step 1: Checkout the repo
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Step 2: List repo content
+      - name: List files
+        run: ls -la
+
+      # Step 3: Display system information
+      - name: Show system information
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Operating system: $(uname -a)"
+          echo "Current directory: $(pwd)"
+
+      # Step 4: Check software versions
+      - name: Check versions
+        run: |
+          echo "Node version: $(node --version)"
+          echo "Python version: $(python --version)"
+          echo "Git version: $(git --version)"
+
+      # Step 5: Other information
+      - name: Other information
+        run: |
+          echo "Current date: $(date)"
+          echo "Available disk space:"
+          df -h
+          echo "Free memory (MB):"
+          free -m
+
+      # Step 6: Display custom environment variable
+      - name: Custom environment
+        env:
+          CUSTOM_MESSAGE: "Hello from GitHub Actions!"
+        run: echo $CUSTOM_MESSAGE
+
+      # Step 7: Conditional execution (only runs on push event)
+      - name: Conditional step
+        if: github.event_name == 'push'
+        run: echo "This was triggered by a push event"
