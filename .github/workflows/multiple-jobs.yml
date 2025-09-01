@@ -27,7 +27,7 @@ jobs:
 
   # Second job: test (depends on build)
   test:
-    name: Start Next.js project
+    name: Run tests
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -42,14 +42,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests (or start project)
-        run: npm start
+      - name: Run unit tests
+        run: npm test   # <-- instead of npm start
 
   # Third job: Deploy
   deploy:
     name: Deploy Application
     runs-on: ubuntu-latest
-    needs: [build, test] # Will only run if both pass
+    needs: [build, test]
     steps:
       - name: Deploy
         run: |
