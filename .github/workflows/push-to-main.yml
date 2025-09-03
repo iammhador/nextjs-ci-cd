@@ -1,15 +1,21 @@
-name: Multiple Jobs Lab
+name: Push to main branch
 
 on:
   push:
     branches:
-      - "feature/*"
+      - "main"
 
 jobs:
   # First job: build
   build:
     name: Next.js project build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env: 
+      NODE_ENV: production
+      BUILD_VERSION: 1.0.${{ github.run_number }}
+      GIT_COMMIT: ${{ github.sha }}
+      GIT_BRANCH: ${{ github.ref_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,6 +34,7 @@ jobs:
   # Second job: Deploy
   deploy:
     name: Deploy Application
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     steps:
