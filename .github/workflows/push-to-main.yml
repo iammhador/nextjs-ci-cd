@@ -1,0 +1,61 @@
+name: Push to main branch
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  # First job: build
+  build:
+    name: Next.js project build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env: 
+      NODE_ENV: production
+      BUILD_VERSION: 1.0.${{ github.run_number }}
+      GIT_COMMIT: ${{ github.sha }}
+      GIT_BRANCH: ${{ github.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+  # Second job: Deploy
+  deploy:
+    name: Deploy Application
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy
+        run: |
+          echo "🚀 Deploying application..."
+          echo "Deployment successful!"
+
+  # Third job: Notify
+  notify:
+    name: Send Notification
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Send success notification
+        if: ${{ success() }}
+        run: |
+          echo "📧 Sending deployment notification..."
+          echo "✅ Project build & deploy successful!"
+
+      - name: Send failure notification
+        if: ${{ failure() }}
+        run: |
+          echo "❌ Build or deployment failed. Please check the logs!"
